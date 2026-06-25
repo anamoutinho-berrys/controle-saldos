@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const BASE = 'https://graph.facebook.com/v21.0';
+  const BASE = 'https://graph.facebook.com/v22.0';
   const endpoint = path ? `act_${account}/${path}` : `act_${account}`;
   const params = new URLSearchParams({ access_token: token });
   if (preset) params.set('date_preset', preset);
