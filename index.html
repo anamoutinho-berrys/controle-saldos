@@ -471,8 +471,15 @@ async function apiFetch(account, path, params={}) {
 }
 
 async function fetchBal(id) {
-  const j = await apiFetch(id, '', { fields: 'balance' });
-  const raw = parseFloat(j.balance);
+  const j = await apiFetch(id, '', { fields: 'prepay_balance,balance,funding_source_details' });
+  // prepay_balance = "Fundos disponíveis" em Cobranças e Pagamentos (crédito pré-pago)
+  let raw = parseFloat(j.prepay_balance);
+  if (isNaN(raw) || raw === 0) {
+    // fallback: tenta funding_source_details.balance (alguns tipos de conta expõem aqui)
+    const fsd = j.funding_source_details;
+    if (fsd && fsd.balance != null) raw = parseFloat(fsd.balance);
+    else raw = parseFloat(j.balance);
+  }
   if (isNaN(raw)) throw new Error('balance indisponível');
   return raw / 100;
 }
