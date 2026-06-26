@@ -9,14 +9,14 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { account, path, preset, ...rest } = req.query;
+  const { account, path, preset, node, ...rest } = req.query;
   if (!account) {
     res.status(400).json({ error: { message: 'Parâmetro account obrigatório.' } });
     return;
   }
 
   const BASE = 'https://graph.facebook.com/v22.0';
-  const endpoint = path ? `act_${account}/${path}` : `act_${account}`;
+  const endpoint = node ? node : (path ? `act_${account}/${path}` : `act_${account}`);
   const params = new URLSearchParams({ access_token: token });
   if (preset) params.set('date_preset', preset);
   for (const [k, v] of Object.entries(rest)) params.set(k, v);
